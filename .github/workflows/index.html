@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .result-item {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Statistics Calculator</h1>
+        <input type="text" id="numbers" placeholder="Enter numbers separated by commas">
+        <button onclick="calculateStatistics()">Calculate</button>
+        <div class="results">
+            <div class="result-item"><strong>Mean:</strong> <span id="mean"></span></div>
+            <div class="result-item"><strong>Median:</strong> <span id="median"></span></div>
+            <div class="result-item"><strong>Standard Deviation:</strong> <span id="stdDev"></span></div>
+            <div class="result-item"><strong>Interquartile Range:</strong> <span id="iqr"></span></div>
+        </div>
+    </div>
+    <script>
+        function calculateStatistics() {
+            const numbersInput = document.getElementById('numbers').value;
+            const numbers = numbersInput.split(',').map(Number).filter(n => !isNaN(n));
+
+            if (numbers.length === 0) {
+                alert("Please enter a valid list of numbers.");
+                return;
+            }
+
+            const mean = calculateMean(numbers);
+            const median = calculateMedian(numbers);
+            const stdDev = calculateStandardDeviation(numbers, mean);
+            const iqr = calculateIQR(numbers);
+
+            document.getElementById('mean').textContent = mean.toFixed(2);
+            document.getElementById('median').textContent = median.toFixed(2);
+            document.getElementById('stdDev').textContent = stdDev.toFixed(2);
+            document.getElementById('iqr').textContent = iqr.toFixed(2);
+        }
+
+        function calculateMean(numbers) {
+            const sum = numbers.reduce((acc, num) => acc + num, 0);
+            return sum / numbers.length;
+        }
+
+        function calculateMedian(numbers) {
+            numbers.sort((a, b) => a - b);
+            const middle = Math.floor(numbers.length / 2);
+
+            if (numbers.length % 2 === 0) {
+                return (numbers[middle - 1] + numbers[middle]) / 2;
+            } else {
+                return numbers[middle];
+            }
+        }
+
+        function calculateStandardDeviation(numbers, mean) {
+            const variance = numbers.reduce((acc, num) => acc + Math.pow(num - mean, 2), 0) / numbers.length;
+            return Math.sqrt(variance);
+        }
+
+        function calculateIQR(numbers) {
+            numbers.sort((a, b) => a - b);
+            const q1 = calculateMedian(numbers.slice(0, Math.floor(numbers.length / 2)));
+            const q3 = calculateMedian(numbers.slice(Math.ceil(numbers.length / 2)));
+            return q3 - q1;
+        }
+    </script>
+</body>
+</html>
